@@ -58,7 +58,6 @@ class Stack {
 		}
 		
 		void printStack() {
-			cout<<"Stack : ";	
 			node* trav = topNode;
 			
 			while(trav) {
@@ -66,7 +65,7 @@ class Stack {
 				trav = trav->next;
 				
 				if(trav)
-					printf("->");
+					printf(",");
 			}
 			cout<<endl;
 			return;
@@ -87,31 +86,3 @@ class Stack {
 			return;
 		}
 };
-
-
-
-int main() {
-	Stack s;
-
-	s.push(1);
-	s.push(2);
-	s.push(3);
-	s.push(4);
-	s.push(5);
-	s.push(6);
-	s.push(7);
-
-	s.printStack();
-
-	cout<<"top node : "<<s.top()<<endl;
-
-	cout<<"popped "<<s.pop()<<endl;
-
-	cout<<s.isEmpty()<<endl;
-
-	s.printStack();
-
-	s.deleteStack();
-	s.printStack();
-	return 0;
-}
