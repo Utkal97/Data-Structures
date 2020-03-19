@@ -12,6 +12,12 @@ class BinaryTree {
 
         node* createNode(int value) {
             node* newNode = new node;
+
+            if(!newNode) {
+                cout<<"Memory Error";
+                return NULL;
+            }
+
             newNode->data = value;
             newNode->left = NULL;
             newNode->right = NULL;
@@ -95,7 +101,7 @@ class BinaryTree {
                 curr = q.front();
                 q.pop();
 
-                printf("%d ",curr->data);
+                cout<<curr->data<<" ";
 
                 if(curr->left)
                     q.push(curr->left);
@@ -111,7 +117,7 @@ class BinaryTree {
                 return;
             
             printInorderRecursive(trav->left);
-            printf("%d ",trav->data);
+            cout<<trav->data<<" ";
             printInorderRecursive(trav->right);
         }
 
@@ -146,9 +152,9 @@ class BinaryTree {
             if(trav == NULL)
                 return;
             
-            printInorderRecursive(trav->left);
-            printInorderRecursive(trav->right);
-            printf("%d ",trav->data);
+            printPostOrderRecursive(trav->left);
+            printPostOrderRecursive(trav->right);
+            cout<<trav->data<<" ";
         }
 
         void printPostOrderIterative() {
@@ -160,9 +166,9 @@ class BinaryTree {
             if(trav == NULL)
                 return;
 
-            printf("%d ",trav->data);
-            printInorderRecursive(trav->left);
-            printInorderRecursive(trav->right);
+            cout<<trav->data<<" ";
+            printPreOrderRecursive(trav->left);
+            printPreOrderRecursive(trav->right);
         }
 
         void printPreOrderIterative() {
