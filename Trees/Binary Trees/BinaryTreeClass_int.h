@@ -131,7 +131,7 @@ class BinaryTree {
 
             while(!st.empty()) {
 
-                while(curr->left) {					//Go to the farthest left node.
+                while(curr && curr->left) {			//Go to the farthest left node.
                     st.push(curr->left);			//keep pushing left nodes to the stack
                     curr = curr->left;
                 }
@@ -140,10 +140,10 @@ class BinaryTree {
                 cout<<curr->data<<" ";				//print the node at top of stack
                 st.pop();
                 
-                if(curr->right) {				    //if it has right child, make the current node the right child of current
+                if(curr->right) 				    //if it has right child, make the current node the right child of current
                     st.push(curr->right);			//also, push the right child to stack
-                    curr = curr->right;
-                }
+                
+                curr = curr->right;
             }
             return;
         }
