@@ -9,7 +9,7 @@ struct node {
 };
 
 class BinarySearchTree {
-    private:
+    protected:
         node* createNode(int value) {
             node* newNode = new node;
 
