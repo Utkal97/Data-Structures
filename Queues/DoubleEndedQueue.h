@@ -20,10 +20,11 @@ class DoubleEndedQueue {
 
         node* head = NULL;
         node* tail = NULL;
+        int size = 0;
 
     public:
         void push_back(int value) {
-            if(head == NULL) {
+            if(empty()) {
                 head = createNode(value);
                 tail = head;
             }
@@ -33,12 +34,15 @@ class DoubleEndedQueue {
                 tail->next = newNode;
                 tail = newNode;
             }
+            size++;
+            //cout<<"push back "<<value<<endl;
             return;
         }
 
         void push_front(int value) {
-            if(head == NULL) {
+            if(empty()) {
                 head = createNode(value);
+                tail = head;
             }
             else {
                 node* newNode = createNode(value);
@@ -46,19 +50,28 @@ class DoubleEndedQueue {
                 head->prev = newNode;
                 head = newNode;
             }
+            size++;
+            //cout<<"push front "<<value<<endl;
             return;
         }
 
         int pop_back() {
-            if(head == NULL)
+            if(empty())
                 return -1;
             
             node *tailPrevNode = tail->prev, *temp = tail;
-            tailPrevNode->next = NULL;
+            if(tailPrevNode)
+                tailPrevNode->next = NULL;
 
             int tailData = tail->data;
             free(temp);
+            size--;
+            if(size==0)
+                head = NULL;
+
             tail = tailPrevNode;
+
+            //cout<<"pop back "<<endl;
             return tailData;
         }
 
@@ -71,10 +84,19 @@ class DoubleEndedQueue {
 
             int headData = head->data;
             free(temp);
+            size--;
             head = nextHead;
+            //cout<<"pop front "<<endl;
             return headData;
         }
 
+        int front() {
+            return head->data;
+        }
+
+        int back() {
+            return tail->data;
+        }
         void printQueue() {
             node* trav = head;
             while(trav) {
@@ -85,5 +107,9 @@ class DoubleEndedQueue {
             }
             cout<<endl;
             return;
+        }
+
+        bool empty() {
+            return head==NULL;
         }
 };
