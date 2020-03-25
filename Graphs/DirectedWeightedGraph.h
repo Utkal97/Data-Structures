@@ -27,31 +27,34 @@ class DirectedWeightedGraph : public UndirectedWeightedGraph {
             return;
         }
 
-        //Prims(int vertex). Run time : O(ElogV) with binary Heaps.
-        map<int, int> Prims(int vertex) {
+        //Prim(int vertex). Run time : O(ElogV) using binary Heaps.
+        map<int, int> Prim(int vertex) {
+            
             cout<<"Minimum Spanning Tree with Prim's Algorithm :-"<<endl;
+            
             if(!inRange(vertex-1))
                 return {};
 
-            map<int,int> distance, path;
-            for(int i=1;i<=V;i++) {
+            map<int,int> distance, parent;
+            for(int i=1; i<=V; i++) {
                 distance[i] = -1;
             }
             distance[vertex] = 0;
+            parent[vertex] = 0;
 
-            //min heap that considers first property for priority(in our case distance).
+            //min heap that considers first property as priority(in our case distance).
             set< pair<int,int> > dist_set;
             dist_set.insert(make_pair(0, vertex));
 
             while(!dist_set.empty()) {
-                
+
                 pair<int,int> curr = *(dist_set.begin());
                 dist_set.erase(dist_set.begin());
 
                 vertex = curr.second;
-                
-                for(int neighbour=0; neighbour < V; neighbour++) {
-            
+
+                for(int neighbour = vertex; neighbour < V; neighbour++) {
+
                     if(adj[vertex-1][neighbour]) {
 
                         int new_distance = distance[vertex] + adj[vertex-1][neighbour];
@@ -59,54 +62,67 @@ class DirectedWeightedGraph : public UndirectedWeightedGraph {
                         //if distance is calculated first time, add to set
                         if(distance[neighbour+1] == -1) {
                             distance[neighbour+1] = adj[vertex-1][neighbour];
+                            parent[neighbour+1] = vertex;
+                            
                             dist_set.insert(make_pair(distance[neighbour+1], neighbour+1));
-                            path[neighbour+1] = vertex;
                         }
                         //if distance is already calculated, update distance by removing and inserting again into set
                         else if(distance[neighbour+1] > new_distance) {
                             dist_set.erase(dist_set.find(make_pair(distance[neighbour+1], neighbour+1)));
+                            
                             distance[neighbour+1] = adj[vertex-1][neighbour];
+                            parent[neighbour+1] = vertex;
+                            
                             dist_set.insert(make_pair(distance[neighbour+1], neighbour+1));
-                            path[neighbour+1] = vertex;
                         }
+                        //printf("Checking src : %d, dest : %d distance : %d\n",vertex, neighbour+1, distance[neighbour+1]);
                     }
                 }
             }
 
-            return path;
+            //MST is the set of edges in Minimum Spanning Tree
+            set<struct edge> MST;
+            cout<<"MST :-"<<endl;
+            for(int i=1; i<=V; i++) {
+                MST.insert({distance[i], parent[i], i});
+            }
+            for(set<struct edge>::iterator it = MST.begin(); it!=MST.end(); it++) {
+                printf("%d : %d %d\n",it->weight, it->src, it->dest);
+            }
+
+            return parent;
         }
 
-
+        //Kruskal(). Run time : O(V^2) for adjacency matrix. Gives Minimum Spanning Tree
         void Kruskal() {
 
+            cout<<"Minimum Spanning Tree with Kruskal's Algorithm :-"<<endl;
+            
             //set of edges of given graph
             set<struct edge> edge_set;
-            printAdjMatrix();
+            
             for(int vertex = 0; vertex<V; vertex++) {
                 for(int neighbour = 0; neighbour<V; neighbour++) {
                     if(adj[vertex][neighbour])
                         edge_set.insert({adj[vertex][neighbour], vertex+1, neighbour+1});
                 }
             }
-            
-            //MST is a set that contains edges of Minimum Spanning Tree
+
+            //trees is a Forest of trees (disjoint sets)
+            DisjointSet trees(V);
+
+            //MST : Minimum Spanning Tree. Set of edges (weight, src, dest)
             set<struct edge> MST;
 
-            //tree number that given vertex belongs to
-            int tree[V];
+            for(set<struct edge>::iterator it = edge_set.begin(); it != edge_set.end(); it++) {
 
-            for(int i=0;i<V;i++) {
-                tree[i] = i+1;
-            }
-
-            for(set<struct edge>::iterator it = edge_set.begin(); it!=edge_set.end(); it++) {
-                if(tree[it->src] != tree[it->dest]) {
-                    tree[it->src] = min(tree[it->src], tree[it->dest]);
-                    MST.insert(*it);
+                if( trees.Find(it->src) != trees.Find(it->dest)) {
+                    //printf("Joining %d %d\n",it->src, it->dest);
+                    trees.Union(it->src, it->dest);
+                    MST.insert({it->weight, it->src, it->dest});
                 }
             }
-
-            cout<<"Minimum Spanning Tree with Kruskal's Algorithm :-"<<endl;
+            
             for(set<struct edge>::iterator it = MST.begin(); it!=MST.end(); it++) {
                 printf("%d : %d %d\n",it->weight, it->src, it->dest);
             }

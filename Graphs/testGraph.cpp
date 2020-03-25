@@ -143,11 +143,11 @@ int main() {
 
 
     path = UWG.Prim(1);
-    // printMap(path);
+    //printMap(path);
 
-    // UWG.Kruskal();
+    UWG.Kruskal();
 
-    /*
+    
     cout<<"////////////////////////////////////////////////////////"<<endl;
 
     DirectedWeightedGraph DWG(V,E);
@@ -162,14 +162,13 @@ int main() {
 
     DWG.printAdjMatrix();
 
-    distance = DWG.shortestPathFrom(1);
-    printMap(distance);
+    //distance = DWG.shortestPathFrom(1);
+    //printMap(distance);
 
     path = DWG.Prim(1);
-    printMap(path);
+    //printMap(path);
 
     DWG.Kruskal();
-*/
 
     return 0;
 }

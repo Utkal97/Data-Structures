@@ -221,7 +221,7 @@ class UndirectedWeightedGraph : public UndirectedGraph_AdjMatrix {
                             
                             dist_set.insert(make_pair(distance[neighbour+1], neighbour+1));
                         }
-                        printf("Checking src : %d, dest : %d distance : %d\n",vertex, neighbour+1, distance[neighbour+1]);
+                        //printf("Checking src : %d, dest : %d distance : %d\n",vertex, neighbour+1, distance[neighbour+1]);
                     }
                 }
             }
@@ -254,10 +254,19 @@ class UndirectedWeightedGraph : public UndirectedGraph_AdjMatrix {
                 }
             }
 
+            //trees is a Forest of trees (disjoint sets)
             DisjointSet trees(V);
-            
+
+            //MST : Minimum Spanning Tree. Set of edges (weight, src, dest)
+            set<struct edge> MST;
+
             for(set<struct edge>::iterator it = edge_set.begin(); it != edge_set.end(); it++) {
-                
+
+                if( trees.Find(it->src) != trees.Find(it->dest)) {
+                    //printf("Joining %d %d\n",it->src, it->dest);
+                    trees.Union(it->src, it->dest);
+                    MST.insert({it->weight, it->src, it->dest});
+                }
             }
             
             for(set<struct edge>::iterator it = MST.begin(); it!=MST.end(); it++) {
