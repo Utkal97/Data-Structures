@@ -17,7 +17,7 @@ class UndirectedGraph_AdjMatrix {
         int **adj;
 
         bool inRange(int x) {
-            if(0<=x && x<=V)
+            if(0<=x && x<V)
                 return true;
             return false;
         }
@@ -34,10 +34,11 @@ class UndirectedGraph_AdjMatrix {
             return;
         }
 
-        void initializeGraph(int *G) {
+        //initializeGraph(int *array). Type case your 2D array to int pointer while passing.
+        void initializeGraph(int *arr) {
             for(int row = 0; row < V; row++) {
                 for(int col = 0; col < V; col++) {
-                    adj[row][col] = *(G + row*V + col); //dereference pointer value
+                    adj[row][col] = *(arr + row*V + col); //dereference pointer value
                 }
             }
         }
@@ -64,6 +65,7 @@ class UndirectedGraph_AdjMatrix {
             return;
         }
 
+        //DFS(int vertex, int visited[]). Run-time : O(V). Pass an array of int of size >= V, initialized to zeros.
         void DFS(int vertex, int visited[]) {
             vertex-=1;
             if(visited[vertex])
@@ -78,7 +80,12 @@ class UndirectedGraph_AdjMatrix {
             }
         }
 
+        //DFSTraversal(int vertex). Run-time: O(V).
         void DFSTraversal(int vertex) {
+            if(!inRange(vertex-1)) {
+                cout<<"Given vertex not in range"<<endl;
+                return;
+            }
             printf("DFS(%d) : ",vertex);
             int visited[V] = {0};
 
@@ -89,6 +96,7 @@ class UndirectedGraph_AdjMatrix {
             return;
         }
 
+        //BFSTraversal(int vertex). Run-time: O(V).
         void BFSTraversal(int vertex) {
             printf("BFS(%d) : ",vertex);
             vertex -= 1;
@@ -125,5 +133,38 @@ class UndirectedGraph_AdjMatrix {
             }
             printf("Total vertices : %d and Total Edges : %d\n",V,E);
             return;
+        }
+
+        //shortestPathFrom(int vertex). Run time : O(V). Uses BFS.
+        map<int, int> shortestPathFrom(int vertex) {
+            if(!inRange(vertex-1))
+                return {};
+
+            map<int, int> distance;
+            int visited[V] = {0};
+
+            distance[vertex] = 0;
+
+            queue<int> q;
+            q.push(vertex);
+
+            while(!q.empty()) {
+                vertex = q.front();
+                q.pop();
+
+                int visited_ind = vertex-1;
+
+                visited[visited_ind] = 1;
+                for(int nei = 0; nei <V; nei++) {
+                    if(adj[visited_ind][nei] &&!visited[nei]) {
+                        distance[nei+1] = distance[vertex]+1;
+                        visited[nei] = 1;
+                        q.push(nei+1);
+                    }
+                }
+
+            }
+            
+            return distance;
         }
 };

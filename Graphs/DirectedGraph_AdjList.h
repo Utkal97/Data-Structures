@@ -4,6 +4,11 @@ using namespace std;
 
 class DirectedGraph_AdjList : public UndirectedGraph_AdjList {
     public :
+
+        DirectedGraph_AdjList(int no_of_vertices, int no_of_edges) : UndirectedGraph_AdjList(no_of_vertices, no_of_edges) {
+            return;
+        }
+
         void addEdge(int u, int v) {
 
             node *u_head = adjList[u];
@@ -55,6 +60,52 @@ class DirectedGraph_AdjList : public UndirectedGraph_AdjList {
 
             if(edge_deleted)
                 E--;
+            return;
+        }
+
+        //Run time: O(|V| + |E|).  Prints vertices in topologically sorted order.
+        void topologicalSort() {
+
+            map<int, int> indegree;
+            for(int vertex=1; vertex<=V; vertex++) {
+                node* neighbour = adjList[vertex];
+                while(neighbour) {
+                    indegree[neighbour->data]++;
+                    neighbour = neighbour->next;
+                }
+            }
+
+            queue<int> q;
+            for(int vertex=1; vertex<=V; vertex++) {
+                if(indegree[vertex]==0)
+                    q.push(vertex);
+            }
+
+            int count = 0;
+            while(!q.empty()) {
+
+                int curr = q.front();
+                q.pop();
+                cout<<curr<<" ";
+                count++;
+
+                node* neighbour = adjList[curr];
+                while(neighbour) {
+
+                    int neigh = neighbour->data;
+                    indegree[neigh]--;
+
+                    if(indegree[neigh] == 0)
+                        q.push(neigh);
+
+                    neighbour = neighbour->next;
+                }
+            }
+
+            if(count != V)
+                cout<<"Graph is cyclic.";
+    
+            cout<<endl;
             return;
         }
 };
