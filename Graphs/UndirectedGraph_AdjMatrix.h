@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-
+#include "./../Linked Lists/SinglyLinkedListClass.h"
 using namespace std;
 
 void printArray2(int array[], int size) {
@@ -9,6 +9,11 @@ void printArray2(int array[], int size) {
     cout<<endl;
     return;
 }
+
+struct unweightedEdge {
+    int src;
+    int dest;
+};
 
 class UndirectedGraph_AdjMatrix {
     protected:
@@ -166,5 +171,120 @@ class UndirectedGraph_AdjMatrix {
             }
             
             return distance;
+        }
+
+        //EulerianExists(). Run time : O(V^2). Returns 0 : if no Eulerian walk exists. 1 : if Eulerian Path exists. 2 : if Eulerian Circuit exists
+        int EulerianExists() {
+
+            //contains degree of each vertex.
+            map<int, int> degree;
+
+            //counts the number of vertices with Odd degree.
+            int oddDegree = 0;
+            
+            for(int vertex=0; vertex<V; vertex++) {
+                for(int neighbour = 0; neighbour < V; neighbour++) {
+                    if(adj[vertex][neighbour])
+                        degree[vertex+1]++;
+                }
+                if(degree[vertex+1] % 2 != 0)
+                    oddDegree++;
+            }
+
+            if(oddDegree == 2)
+                return 1;
+            else if(oddDegree == 0)
+                return 2;
+            else {
+                cout<<"No Eulerian walk exists for given graph"<<endl;
+                return 0;
+            }
+        }
+
+        Node* DFSEulerPath(int vertex, map<int, Node*> adjList, int edges) {
+            if(edges <= 0)
+                return NULL;
+            
+            
+            return NULL;
+        }
+
+        //EulerianPath().
+        vector<int> EulerianPath() {
+            //contains src in first index(0) and dest in second index(1).
+            vector<int> SrcDest = EulerianPathExists();
+            if(SrcDest.size()==0) {
+                cout<<"Eulerian Path doesn't exist for graph."<<endl;
+                return {};
+            }
+
+            cout<<"Eulerian Path :- "<<endl;
+            SinglyLinkedList Path;
+            Path.append(SrcDest[0]);
+            int no_of_edges = E;
+
+            map<int, Node*> adjList = getADJList();
+
+            Node* EulerPathHead = DFSEulerPath(SrcDest[0],adjList, no_of_edges);
+            Path.setHead(EulerPathHead);
+            return {};
+        }
+
+        //EulerianPathExists(). Run time O(V^2). If path exists, returns vector<int> of size 2. Otherwise, empty vector<int> is returned.
+        vector<int> EulerianPathExists() {
+
+            //contains degree of each vertex.
+            map<int, int> degree;
+
+            int oddDegree = 0, src, dest;
+
+            //tells if src is already set.
+            bool srcSet = false;
+
+            for(int vertex=0; vertex<V; vertex++) {
+
+                for(int neighbour = 0; neighbour < V; neighbour++) {
+                    if(adj[vertex][neighbour])
+                        degree[vertex+1]++;
+                }
+
+                if(degree[vertex+1] % 2 != 0) {
+                    if(!srcSet)
+                        src = vertex+1;
+                    else
+                        dest = vertex+1;
+                    oddDegree++;
+                }
+            }
+
+            if(oddDegree==2)
+                return {src, dest};
+            else
+                return {};
+        }
+
+        //renders adjacency list from adjacency matrix of graph of the instance
+        map<int, Node*> getADJList() {
+            map<int, Node *> adjList;
+
+            for(int vertex = 0; vertex<V; vertex++) {
+                SinglyLinkedList list;
+
+                for(int nei = 0; nei<V; nei++) {
+                    if(adj[vertex][nei])
+                        list.append(nei+1);
+                }
+
+                adjList[vertex+1] = list.getHead();
+            }
+
+            for(map<int, Node*>::iterator it=adjList.begin(); it!=adjList.end(); it++) {
+                printf("%d : ");
+                while(it->second) {
+                    cout<<it->second->data<<" ";
+                }
+                cout<<endl;
+            }
+            return adjList;
         }
 };

@@ -274,4 +274,17 @@ class UndirectedWeightedGraph : public UndirectedGraph_AdjMatrix {
             }
             return;
         }
+
+        //INCOMPLETE
+        vector<int> findAP(int vertex, vector<int> &AP) {
+            
+        }
+
+        //INCOMPLETE :- articulatoinPoints(). Run time : O(V+E) (since, DFS). Gives out all the cut vertices of Graph.
+        vector<int> articulationPoints() {
+            vector<int> AP;
+            int parent[V] = {-1};
+            parent[1] = 1;
+            return findAP(1,AP);
+        }
 };

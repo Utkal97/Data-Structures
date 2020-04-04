@@ -6,61 +6,62 @@ struct Node {
 	struct Node *next;
 };
 
+//creates Singly Linked List node and returns pointer pointing to that Node.
+Node* createNode(int val) {
+
+	Node* newNode = new Node;
+	newNode->data = val;
+	newNode->next = NULL;
+
+	return newNode;
+}
+
 class SinglyLinkedList 
 {
 	private:
-		
-		Node* createNode(int val) {
-
-			Node* newNode = new Node;
-			newNode->data = val;
-			newNode->next = NULL;
-
-			return newNode;
-		}
-		
-		
-	public:
-
 		struct Node* root = NULL;
+        struct Node* tail = NULL;
+
+	public:
 
 		void append(int value) {
 			if(root == NULL) {
 				root = createNode(value);
+                tail = root;
 			}
 			else {
 				struct Node* trav = root;
-	
+
 				while(trav->next !=NULL)
 					trav = trav->next;
-	
-				trav->next = createNode(value);				
+
+				trav->next = createNode(value);	
+                tail = trav->next;			
 			}
-			printList();
+			//printList();
 			return;
 		}
-		
+
 		void printList() {
 
 			cout<<"length = "<< length() <<" Printing list : ";
-			
+
 			Node *trav = root;
-			
+
 			while(trav!=NULL) {
 				cout<<trav->data<<"->";
 				trav = trav->next;
 			}
 
 			cout<<"NULL"<<endl;
-			
+
 			return;
 		}
-		
+
 		int length() {
 			Node *trav = root;
-			
-			int count = 0;
 
+			int count = 0;
 			while(trav != NULL) {
 				count++;
 				trav = trav->next;
@@ -71,7 +72,7 @@ class SinglyLinkedList
 		void insertAtPos(int pos, int val) {
 
 			if(pos <= 0) {
-				cout<<"given position out of bounds"<<endl;
+				cout<<"insert position out of bounds"<<endl;
 				return;
 			}
 				
@@ -100,16 +101,19 @@ class SinglyLinkedList
 				}
 	
 				if(trav == NULL)
-					cout<<" given position out of bounds"<<endl;
+					cout<<"insert position out of bounds"<<endl;
 				else {
 					Node* newNode = createNode(val);
 					
 					Node* temp = trav->next;
 					trav->next = newNode;
 					newNode->next = temp;
+
+                    if(temp == NULL)
+                        tail = tail->next;
 				}
 			}
-			printList();
+			//printList();
 			return;
 		}
 		
@@ -121,10 +125,10 @@ class SinglyLinkedList
 			insertAtPos(length()+1, val);
 		}
 		
-		void deleteAtPos(int pos) {
-			if(pos==1) {
+		Node* deleteAtPos(int pos) {
+			if(pos==1)
 				deleteAtBeginning();
-			}
+
 			else {
 				
 				Node* trav = root;
@@ -141,37 +145,43 @@ class SinglyLinkedList
 				else if(trav->next != NULL) {
 					Node* temp = trav->next;
 
-					trav->next = trav->next->next;
+					trav->next = temp->next;
 					free(temp);
+
+                    if(trav->next == NULL)
+                        tail = trav;
 				}
 			}
 			
 			cout<<"Delete element at pos "<<pos;
-			printList();
-			return;
+			//printList();
+			return root;
 		}
 		
-		void deleteAtBeginning() {
-			if(root == NULL)
+		Node* deleteAtBeginning() {
+			if(root == NULL) 
 				cout<<"there is no linked list";
 
 			else {
 				Node *temp = root;
 				root = root->next;
 				free(temp);
+
+                if(root == NULL)
+                    tail == NULL;
 			}
 
-			cout<<"delete at begining";
-			deleteAtPos(1);
-			return;
+			//cout<<"deleted at begining";
+			return root;
 		}
 
-		void deleteAtEnd() {
-			cout<<"Delete at end";
+		Node* deleteAtEnd() {
+			//cout<<"Delete at end";
 			deleteAtPos(length());
-			return;
+			return root;
 		}
 
+        //delelteList(). Run time : O(n). Deletes complete list and sets head and tail to NULL
 		void deleteList() {
 			Node* trav = root;
 
@@ -182,17 +192,19 @@ class SinglyLinkedList
 				free(temp);
 			}
 			root = NULL;
-			
+			tail = NULL;
 			cout<<"List is deleted";
 			printList();
+
 			return;
 		}
 		
+        //reverse(). Runtime : O(n). Reverses linked list. Updates head and tail
 		void reverse() {
 			if(root != NULL && root->next != NULL) {
 
 				Node* head = root->next, *prev = NULL, *curr = root, *nextN = curr->next;
-
+                tail = root;
 				while(curr!=NULL) {
 					
 					curr->next = prev;
@@ -209,6 +221,7 @@ class SinglyLinkedList
 			return;
 		}
 		
+        //Doesn't update tail. Only updartes head
 		void reverseInPairs() {
 			if(root != NULL && root->next != NULL) {
 				Node *newHead = root->next;
@@ -233,4 +246,37 @@ class SinglyLinkedList
 			printList();
 			return;
 		}
+
+        //getTaul(). returns tail of Linked List
+        Node* getTail() {
+            return tail;
+        }
+
+        //getHead(). returns head of Linked List
+        Node* getHead() {
+            return root;
+        }
+
+        //setHead(Node *newNode). Run time : O(n). sets new head and updates tail(this takes O(n)).
+        Node* setHead(Node *newHead) {
+            root = newHead;
+            while(newHead->next)
+                newHead = newHead->next;
+
+            tail = newHead;
+            return newHead;
+        }
+
+        Node* concat(Node *anotherListHead) {
+            if(root == NULL)
+                root = anotherListHead;
+            else
+                tail->next = anotherListHead;
+
+            while(anotherListHead->next)
+                anotherListHead = anotherListHead->next;
+
+            tail = anotherListHead;
+            return root;
+        }
 };

@@ -25,8 +25,7 @@ edge* createEdge(int weight, int a, int b) {
     return newEdge;
 }
 
-
-int main (){ 
+int main (){
     set<pair<int, int> > st;
 
     st.insert(make_pair(1,5));
